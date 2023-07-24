@@ -1,6 +1,8 @@
 ## Config example
 
-```
+Create a `config.json` file and follow this template:
+
+```json
 {
 	"api_key": "super-sicret-key",
 	"campaign_id": "011824",
