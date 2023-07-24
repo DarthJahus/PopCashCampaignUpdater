@@ -53,4 +53,4 @@ if __name__ == "__main__":
         else:
             print(f"No new articles available in the RSS feed.\n Last article: {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
         print("Waiting %i minutes before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * 60), end='\r')
-        time.sleep(__config["update_period"])
+        time.sleep(__config["update_period"] * 60)
