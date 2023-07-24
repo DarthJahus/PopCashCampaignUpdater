@@ -5,8 +5,10 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bots/PopCashCampaignUpdater/PopCashCampaignUpdaterRSS.py
+ExecStart=/usr/bin/python3 /bots/PopCashCampaignUpdater/PopCashCampaignUpdaterRSS.py
 WorkingDirectory=/bots/PopCashCampaignUpdater/
+StandardOutput=file:/bots/PopCashCampaignUpdater/stdout.log
+StandardError=file:/bots/PopCashCampaignUpdater/stderr.log
 Restart=always
 RestartSec=600
 
