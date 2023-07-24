@@ -7,6 +7,11 @@ import time
 import json
 
 __last_processed_timestamp = None
+__log_file = open("latest.log", 'a', encoding="utf-8")
+
+
+def log_to_file(text):
+    __log_file.write(text)
 
 
 def pc_increase_campaign_budget(campaign_id, api_key, budget_delta):
@@ -43,14 +48,16 @@ if __name__ == "__main__":
         __config = json.loads(_config_file.read())
     
     while True:
-        print("%s\n Getting updates via RSS..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+        log_to_file("%s\n Getting updates via RSS..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         new_article_available, article_id = check_new_article_in_rss(__config["rss_link"])
         if new_article_available:
             if pc_increase_campaign_budget(__config["campaign_id"], __config["api_key"], __config["budget_delta"]):
-                print(f"Campaign {__config['campaign_id']} budget increased successfully by {__config['budget_delta']} $\n for new article {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
+                log_to_file(f"Campaign {__config['campaign_id']} budget increased successfully by {__config['budget_delta']} $\n for new article {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
             else:
-                print(f"Failed to increase budget for campaign {__config['campaign_id']}.")
+                log_to_file(f"Failed to increase budget for campaign {__config['campaign_id']}.")
         else:
-            print(f"No new articles available in the RSS feed.\n Last article: {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
-        print("Waiting %i minutes before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * 60), end='\r')
+            log_to_file(f"No new articles available in the RSS feed.\n Last article: {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
+        log_to_file("Waiting %i minutes before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * 60), end='\r')
         time.sleep(__config["update_period"] * 60)
+
+__log_file.close()
