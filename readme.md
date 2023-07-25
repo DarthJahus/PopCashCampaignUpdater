@@ -9,6 +9,7 @@ Create a `config.json` file and follow this template:
 	"rss_link": "https://my.super-web.site/feed/",
 	"update_period": 5,
 	"budget_delta": 0.1,
-	"debug": false
+	"debug": false,
+	"authors": ["author1", "author2"]
 }
 ```

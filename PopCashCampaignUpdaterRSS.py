@@ -32,24 +32,24 @@ def pc_increase_campaign_budget(campaign_id, api_key, budget_delta):
         "Content-Type": "application/json"
     }
     data = {
-        "adjustBudget": budget_delta
+        "adjustBudget": 0.1 + ((budget_delta - 0.1) * int(not __config["debug"]))
     }
     response = requests.put(url, headers=headers, json=data)
     return (response.status_code == 200)
 
 
-def check_new_article_in_rss(feed_url):
+def check_new_article_in_rss(feed_url, authors):
     global __last_processed_timestamp
     feed = feedparser.parse(feed_url)
     if 'entries' in feed:
-        latest_article = feed.entries[0]
-        article_timestamp = latest_article.get('published_parsed')
-        article_id = latest_article.get('id')
-        if __last_processed_timestamp is None or article_timestamp > __last_processed_timestamp:
-            __last_processed_timestamp = article_timestamp
-            return True, article_id
-        else:
-            return False, article_id
+        for _latest_article in feed.entries[0:3]:
+            print(json.dumps(_latest_article, sort_keys=True, indent=4))
+            _article_timestamp = _latest_article.get('published_parsed')
+            _article_id = _latest_article.get('id')
+            if (_latest_article.get('author') in authors) and (__last_processed_timestamp is None or _article_timestamp > __last_processed_timestamp):
+                __last_processed_timestamp = _article_timestamp
+                return True, _article_id
+        return False, feed.entries[0].get('id')
     return False, None
 
 
@@ -60,14 +60,14 @@ if __name__ == "__main__":
     
     while True:
         print("%s\n Getting updates via RSS..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-        new_article_available, article_id = check_new_article_in_rss(__config["rss_link"])
+        new_article_available, article_id = check_new_article_in_rss(__config["rss_link"], __config["authors"])
         if new_article_available:
             if pc_increase_campaign_budget(__config["campaign_id"], __config["api_key"], __config["budget_delta"]):
                 print(f"Campaign {__config['campaign_id']} budget increased successfully by {__config['budget_delta']} $\n for new article {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
             else:
                 print(f"Failed to increase budget for campaign {__config['campaign_id']}.")
         else:
-            print(f"No new articles available in the RSS feed.\n Last article: {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
+            print(f"No new articles available in the RSS feed.\n Last article: {article_id}.")
         print("Waiting %i seconds before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * (1 + 59 * int(not __config["debug"]))), end='\r')
         time.sleep(__config["update_period"] * (1 + 59 * int(not __config["debug"])))
 
