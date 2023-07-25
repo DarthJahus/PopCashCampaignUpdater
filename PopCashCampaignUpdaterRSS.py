@@ -43,7 +43,6 @@ def check_new_article_in_rss(feed_url, authors):
     feed = feedparser.parse(feed_url)
     if 'entries' in feed:
         for _latest_article in feed.entries[0:3]:
-            print(json.dumps(_latest_article, sort_keys=True, indent=4))
             _article_timestamp = _latest_article.get('published_parsed')
             _article_id = _latest_article.get('id')
             if (_latest_article.get('author') in authors) and (__last_processed_timestamp is None or _article_timestamp > __last_processed_timestamp):
