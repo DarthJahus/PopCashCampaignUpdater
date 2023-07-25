@@ -68,8 +68,8 @@ if __name__ == "__main__":
                 print(f"Failed to increase budget for campaign {__config['campaign_id']}.")
         else:
             print(f"No new articles available in the RSS feed.\n Last article: {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
-        print("Waiting %i minutes before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * 60), end='\r')
-        time.sleep(__config["update_period"])
+        print("Waiting %i seconds before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * (1 + 59 * int(not __config["debug"]))), end='\r')
+        time.sleep(__config["update_period"] * (1 + 59 * int(not __config["debug"])))
 
 sys.stdout = sys.__stdout__
 __log_file.close()
