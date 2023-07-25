@@ -5,24 +5,9 @@ import feedparser
 import requests
 import time
 import json
-import sys
-
-
-class DoubleOut:
-    def __init__(self, file):
-        self.file = file
-    
-    def write(self, text):
-        self.file.write(text)
-        sys.__stdout__.write(text)
-    
-    def flush(self):
-        self.file.flush()
-        
 
 __last_processed_timestamp = None
 __log_file = open("latest.log", 'a', encoding="utf-8")
-sys.stdout = DoubleOut(__log_file)
 
 
 def pc_increase_campaign_budget(campaign_id, api_key, budget_delta):
@@ -58,17 +43,16 @@ if __name__ == "__main__":
         __config = json.loads(_config_file.read())
     
     while True:
-        print("%s\n Getting updates via RSS..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+        __log_file.write("%s\n Getting updates via RSS..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         new_article_available, article_id = check_new_article_in_rss(__config["rss_link"], __config["authors"])
         if new_article_available:
             if pc_increase_campaign_budget(__config["campaign_id"], __config["api_key"], __config["budget_delta"]):
-                print(f"Campaign {__config['campaign_id']} budget increased successfully by {__config['budget_delta']} $\n for new article {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
+                __log_file.write(f"Campaign {__config['campaign_id']} budget increased successfully by {__config['budget_delta']} $\n for new article {article_id}\n published on %s." % time.strftime("%Y-%m-%d %H:%M:%S", __last_processed_timestamp))
             else:
-                print(f"Failed to increase budget for campaign {__config['campaign_id']}.")
+                __log_file.write(f"Failed to increase budget for campaign {__config['campaign_id']}.")
         else:
-            print(f"No new articles available in the RSS feed.\n Last article: {article_id}.")
-        print("Waiting %i seconds before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * (1 + 59 * int(not __config["debug"]))), end='\r')
+            __log_file.write(f"No new articles available in the RSS feed.\n Last article: {article_id}.")
+        __log_file.write("Waiting %i seconds before checking for updates...\nPress CTRL+C to exit." % (__config["update_period"] * (1 + 59 * int(not __config["debug"]))))
         time.sleep(__config["update_period"] * (1 + 59 * int(not __config["debug"])))
 
-sys.stdout = sys.__stdout__
 __log_file.close()
