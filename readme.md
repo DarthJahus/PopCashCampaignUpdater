@@ -4,12 +4,24 @@ Create a `config.json` file and follow this template:
 
 ```json
 {
-	"api_key": "super-sicret-key",
-	"campaign_id": "011824",
-	"rss_link": "https://my.super-web.site/feed/",
+	"websites": {
+		"My Super News Website": {
+			"api_key": "such-sicret-key",
+			"campaign_id": "123490",
+			"rss_link": "https://awesome-doma.in/feed/",
+			"budget_delta": 1,
+			"authors": ["NotChatGPT", "Spectalist"]
+		},
+		"My Not Copy Pasta Blog": {
+			"api_key": "wow-other-key",
+			"campaign_id": "119181",
+			"rss_link": "https://googl-disco.net/feed/",
+			"budget_delta": 2,
+			"authors": []
+		}
+	},
 	"update_period": 5,
-	"budget_delta": 0.1,
-	"debug": false,
-	"authors": ["author1", "author2"]
+    "debug": false
 }
+
 ```
