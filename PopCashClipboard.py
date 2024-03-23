@@ -1,5 +1,7 @@
+# Jahus, 2024-03-23
+# API documentation: http://docs.api.popcash.net/#/Advertiser%20%2F%20Campaigns/put_campaigns__id_
+
 import json
-import winsound
 from winsound import Beep
 import requests
 from urllib.parse import urlparse
