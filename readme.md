@@ -25,7 +25,8 @@ Create a `config.json` file and follow this template:
 		}
 	},
 	"update_period": 5,
-    "debug": false
+    "debug": false,
+    "skip_host": false
 }
 
 ```
@@ -41,3 +42,6 @@ Create a `config.json` file and follow this template:
 - If you want to set UTM parameters, do so in `append_utm`. If not, set it to `false`.
 
 - `PopCashClipboard.py` will read from clipboard and, if it finds a valid URL, will update the campaign corresponding to the URL's domain name.
+
+- If "skip_host" is set to `true`, the script won't look at host name, hence allowing you to run it without having to copy a link. In this case, the campaign will be updated without setting a new link.
+
